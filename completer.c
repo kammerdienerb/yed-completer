@@ -84,10 +84,8 @@ static void completer_kill_popup(void) {
 
 static void completer_draw_popup(void) {
     yed_direct_draw_t **dd_it;
-    yed_attrs           active;
-    yed_attrs           assoc;
-    yed_attrs           merged;
-    yed_attrs           merged_inv;
+    yed_attrs           normal;
+    yed_attrs           selected;
     char              **it;
     int                 max_width;
     int                 has_left_space;
@@ -104,12 +102,14 @@ static void completer_draw_popup(void) {
 
     popup.dds = array_make(yed_direct_draw_t*);
 
-    active = yed_active_style_get_active();
-    assoc  = yed_active_style_get_associate();
-    merged = active;
-    yed_combine_attrs(&merged, &assoc);
-    merged_inv = merged;
-    merged_inv.flags ^= ATTR_INVERSE;
+    normal   = yed_active_style_get_popup();
+    selected = yed_active_style_get_popup_alt();
+    if (normal.flags == 0) {
+        normal          = yed_active_style_get_associate();
+        selected        = normal;
+        selected.flags ^= ATTR_INVERSE;
+    }
+
 
     max_width = strlen("--MORE--");
     array_traverse(popup.strings, it) {
@@ -128,7 +128,7 @@ static void completer_draw_popup(void) {
         snprintf(buff, sizeof(buff), "%s%*s ", has_left_space ? " " : "", -max_width, *it);
         dd = yed_direct_draw(popup.frame->cur_y + i + 1,
                              popup.start_x - has_left_space,
-                             start_idx + i == popup.selection ? merged_inv : merged,
+                             start_idx + i == popup.selection ? selected : normal,
                              buff);
         array_push(popup.dds, dd);
 
@@ -141,7 +141,7 @@ static void completer_draw_popup(void) {
             }
             dd = yed_direct_draw(popup.frame->cur_y + i + 1,
                                  popup.start_x - has_left_space,
-                                 merged,
+                                 normal,
                                  buff);
             array_push(popup.dds, dd);
             break;
