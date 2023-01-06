@@ -84,6 +84,7 @@ static void completer_kill_popup(void) {
 
 static void completer_draw_popup(void) {
     yed_direct_draw_t **dd_it;
+    yed_attrs           active;
     yed_attrs           normal;
     yed_attrs           selected;
     char              **it;
@@ -102,14 +103,14 @@ static void completer_draw_popup(void) {
 
     popup.dds = array_make(yed_direct_draw_t*);
 
-    normal   = yed_active_style_get_popup();
-    selected = yed_active_style_get_popup_alt();
-    if (normal.flags == 0) {
-        normal          = yed_active_style_get_associate();
-        selected        = normal;
+    if (yed_active_style_get_popup().flags) {
+        normal          = yed_parse_attrs("&active &popup");
+        selected        = yed_parse_attrs("&active &popup-alt");
+    } else {
+        normal          = yed_parse_attrs("&active &associate");
+        selected        = yed_parse_attrs("&active &associate");
         selected.flags ^= ATTR_INVERSE;
     }
-
 
     max_width = strlen("--MORE--");
     array_traverse(popup.strings, it) {
