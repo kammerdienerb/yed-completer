@@ -262,7 +262,7 @@ int completer_cmd_line(void) {
 
         yed_start_undo_record(frame, buff);
         for (i = word_len; i < cpl; i += 1) {
-            yed_insert_into_line(buff, frame->cursor_line, frame->cursor_col, G(first[i]));
+            yed_insert_into_line(buff, frame->cursor_line, frame->cursor_col, GLYPH(&first[i]));
             yed_move_cursor_within_frame(frame, 0, 1);
         }
         yed_end_undo_record(frame, buff);
@@ -316,7 +316,7 @@ static int completer_no_auto_popup(void) {
 
         yed_start_undo_record(frame, buff);
         for (i = word_len; i < cpl; i += 1) {
-            yed_insert_into_line(buff, frame->cursor_line, frame->cursor_col, G(first[i]));
+            yed_insert_into_line(buff, frame->cursor_line, frame->cursor_col, GLYPH(&first[i]));
             yed_move_cursor_within_frame(frame, 0, 1);
         }
         yed_end_undo_record(frame, buff);
@@ -390,7 +390,7 @@ static void completer_next_selection(void) {
     if (popup.selection > -1) {
         sel_string = *(char**)array_item(popup.strings, popup.selection);
         for (i = popup.start_len; i < strlen(sel_string); i += 1) {
-            yed_insert_into_line(frame->buffer, frame->cursor_line, frame->cursor_col, G(sel_string[i]));
+            yed_insert_into_line(frame->buffer, frame->cursor_line, frame->cursor_col, GLYPH(&sel_string[i]));
             yed_move_cursor_within_frame(frame, 0, 1);
         }
     }
@@ -424,7 +424,7 @@ static void completer_prev_selection(void) {
     if (popup.selection > -1) {
         sel_string = *(char**)array_item(popup.strings, popup.selection);
         for (i = popup.start_len; i < strlen(sel_string); i += 1) {
-            yed_insert_into_line(frame->buffer, frame->cursor_line, frame->cursor_col, G(sel_string[i]));
+            yed_insert_into_line(frame->buffer, frame->cursor_line, frame->cursor_col, GLYPH(&sel_string[i]));
             yed_move_cursor_within_frame(frame, 0, 1);
         }
     }
